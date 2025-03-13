@@ -8,12 +8,12 @@ namespace WebTruyenMVC.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class StoryController : Controller
+    public class CategoryController : Controller
     {
         private readonly MongoContext mongoContext;
-        private readonly ILogger<StoryController> logger;
+        private readonly ILogger<CategoryController> logger;
 
-        public StoryController(MongoContext mongoContext, ILogger<StoryController> logger)
+        public CategoryController(MongoContext mongoContext, ILogger<CategoryController> logger)
         {
             this.mongoContext = mongoContext;
             this.logger = logger;
@@ -22,8 +22,8 @@ namespace WebTruyenMVC.Controllers
         [HttpPost("ListAll")]
         public async Task<IActionResult> GetAll([FromBody] FilterEntity request)
         {
-            var csModel = new StoryModel(mongoContext, logger);
-            var response = await csModel.GetAllStoryAsync(request);
+            var csModel = new CategoryModel(mongoContext, logger);
+            var response = await csModel.GetAllCategoryAsync(request);
 
             return Ok(response);
         }
@@ -31,34 +31,34 @@ namespace WebTruyenMVC.Controllers
         [HttpGet("GetById/{id}")]
         public async Task<IActionResult> GetById(string id)
         {
-            var csModel = new StoryModel(mongoContext, logger);
-            var response = await csModel.GetStoryByIdAsync(id);
+            var csModel = new CategoryModel(mongoContext, logger);
+            var response = await csModel.GetCategoryByIdAsync(id);
             return Ok(response);
         }
 
         [HttpPost("Create")]
-        public async Task<IActionResult> Create([FromBody] StoryEntity newStory)
+        public async Task<IActionResult> Create([FromBody] CategoryEntity newStory)
         {
-            var csModel = new StoryModel(mongoContext, logger);
-            var response = await csModel.CreateStoryAsync(newStory);
+            var csModel = new CategoryModel(mongoContext, logger);
+            var response = await csModel.CreateCategoryAsync(newStory);
             return Ok(response);
         }
 
 
         [HttpPut("Update/{id}")]
-        public async Task<IActionResult> Update(string id, [FromBody] StoryEntity updateStory)
+        public async Task<IActionResult> Update(string id, [FromBody] CategoryEntity updateStory)
         {
             updateStory.Id = id;
-            var csModel = new StoryModel(mongoContext, logger);
-            var response = await csModel.UpdateStoryAsync(updateStory);
+            var csModel = new CategoryModel(mongoContext, logger);
+            var response = await csModel.UpdateCategoryAsync(updateStory);
             return Ok(response);
         }
 
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            var csModel = new StoryModel(mongoContext, logger);
-            var response = await csModel.DeleteStoryAsync(id);
+            var csModel = new CategoryModel(mongoContext, logger);
+            var response = await csModel.DeleteCategoryAsync(id);
             return Ok(response);
         }
     }

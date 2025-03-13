@@ -7,9 +7,9 @@ namespace WebTruyenMVC.Service
     {
         public static class SortBuilder
         {
-            public static SortDefinition<StoryEntity> BuildSort(string orderBy, bool orderByDescending)
+            public static SortDefinition<T> BuildSort<T>(string orderBy, bool orderByDescending) where T : class
             {
-                var builder = Builders<StoryEntity>.Sort;
+                var builder = Builders<T>.Sort;
 
                 if (string.IsNullOrEmpty(orderBy))
                 {
@@ -18,7 +18,6 @@ namespace WebTruyenMVC.Service
 
                 return orderByDescending ? builder.Descending(orderBy) : builder.Ascending(orderBy);
             }
-
         }
     }
 }

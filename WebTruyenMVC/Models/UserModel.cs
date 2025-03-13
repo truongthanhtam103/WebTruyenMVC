@@ -71,33 +71,17 @@ namespace WebTruyenMVC.Models
 
                 if (user == null)
                 {
-                    return null; // Đăng nhập thất bại
+                    return "Đăng nhập thất bại: Tên người dùng hoặc mật khẩu không chính xác.";
                 }
 
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.UTF8.GetBytes(configuration["Jwt:Key"]);
-
-                var tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(new[]
-                    {
-                        new Claim(ClaimTypes.Name, user.UserName),
-                        new Claim(ClaimTypes.Role, user.Role), // Gán role vào token
-                    }),
-                    Expires = DateTime.UtcNow.AddHours(2),
-                    Issuer = configuration["Jwt:Issuer"],
-                    Audience = configuration["Jwt:Audience"],
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-                };
-
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                return tokenHandler.WriteToken(token);
+                return "Đăng nhập thành công.";
             }
             catch (Exception ex)
             {
-                logger.LogError($"Login error: {ex.Message}");
-                return null;
+                logger.LogError($"Lỗi đăng nhập: {ex.Message}");
+                return "Đã xảy ra lỗi trong quá trình đăng nhập.";
             }
         }
+
     }
 }

@@ -6,32 +6,31 @@ using WebTruyenMVC.Entity;
 using WebTruyenMVC.Service;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using System.Xml;
 
 namespace WebTruyenMVC.Models
 {
-    public class StoryModel
+    public class AuthorModel
     {
         private readonly MongoContext mongoContext;
         private readonly ILogger logger;
-        private const string MongoCollection = "Stories";
+        private const string MongoCollection = "Authors";
 
-        public StoryModel(MongoContext mongoContext, ILogger logger)
+        public AuthorModel(MongoContext mongoContext, ILogger logger)
         {
             this.mongoContext = mongoContext;
             this.logger = logger;
         }
 
-        public async Task<MessagesResponse> GetAllStoryAsync(FilterEntity request)
+        public async Task<MessagesResponse> GetAllAuthorAsync(FilterEntity request)
         {
-            var collection = mongoContext.GetCollection<StoryEntity>(MongoCollection);
-            var filter = FilterService.BuildFilter<StoryEntity>(request.q, request.filter);
+            var collection = mongoContext.GetCollection<AuthorEntity>(MongoCollection);
+            var filter = FilterService.BuildFilter<AuthorEntity>(request.q, request.filter);
 
             // Đếm tổng số bản ghi
             var totalRecords = await collection.CountDocumentsAsync(filter);
 
             // Áp dụng sắp xếp
-            var sortDefinition = SortService.SortBuilder.BuildSort<StoryEntity>(request.OrderBy, request.OrderByDescending);
+            var sortDefinition = SortService.SortBuilder.BuildSort<AuthorEntity>(request.OrderBy, request.OrderByDescending);
 
             // Lấy dữ liệu phân trang
             var data = await collection.Find(filter)
@@ -57,10 +56,10 @@ namespace WebTruyenMVC.Models
             return response;
         }
 
-        public async Task<MessagesResponse> GetStoryByIdAsync(string id)
+        public async Task<MessagesResponse> GetAuthorByIdAsync(string id)
         {
-            var collection = mongoContext.GetCollection<StoryEntity>(MongoCollection);
-            var filter = Builders<StoryEntity>.Filter.Eq(s => s.Id, id);
+            var collection = mongoContext.GetCollection<AuthorEntity>(MongoCollection);
+            var filter = Builders<AuthorEntity>.Filter.Eq(s => s.Id, id);
             var story = await collection.Find(filter).FirstOrDefaultAsync();
 
             return new MessagesResponse
@@ -71,9 +70,9 @@ namespace WebTruyenMVC.Models
             };
         }
 
-        public async Task<MessagesResponse> CreateStoryAsync(StoryEntity newStory)
+        public async Task<MessagesResponse> CreateAuthorAsync(AuthorEntity newStory)
         {
-            var collection = mongoContext.GetCollection<StoryEntity>(MongoCollection);
+            var collection = mongoContext.GetCollection<AuthorEntity>(MongoCollection);
             await collection.InsertOneAsync(newStory);
 
             return new MessagesResponse
@@ -84,10 +83,10 @@ namespace WebTruyenMVC.Models
             };
         }
 
-        public async Task<MessagesResponse> UpdateStoryAsync(StoryEntity updateStory)
+        public async Task<MessagesResponse> UpdateAuthorAsync(AuthorEntity updateStory)
         {
-            var collection = mongoContext.GetCollection<StoryEntity>(MongoCollection);
-            var filter = Builders<StoryEntity>.Filter.Eq(s => s.Id, updateStory.Id);
+            var collection = mongoContext.GetCollection<AuthorEntity>(MongoCollection);
+            var filter = Builders<AuthorEntity>.Filter.Eq(s => s.Id, updateStory.Id);
             var updateResult = await collection.ReplaceOneAsync(filter, updateStory);
 
             return new MessagesResponse
@@ -98,10 +97,10 @@ namespace WebTruyenMVC.Models
             };
         }
 
-        public async Task<MessagesResponse> DeleteStoryAsync(string id)
+        public async Task<MessagesResponse> DeleteAuthorAsync(string id)
         {
-            var collection = mongoContext.GetCollection<StoryEntity>(MongoCollection);
-            var filter = Builders<StoryEntity>.Filter.Eq(s => s.Id, id);
+            var collection = mongoContext.GetCollection<AuthorEntity>(MongoCollection);
+            var filter = Builders<AuthorEntity>.Filter.Eq(s => s.Id, id);
             var deleteResult = await collection.DeleteOneAsync(filter);
 
             return new MessagesResponse
