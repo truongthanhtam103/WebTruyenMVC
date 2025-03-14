@@ -15,6 +15,7 @@ namespace WebTruyenMVC.Models
         private readonly MongoContext mongoContext;
         private readonly ILogger logger;
         private const string MongoCollection = "Stories";
+        private const string MongoCollectionRate = "Ratings";
 
         public StoryModel(MongoContext mongoContext, ILogger logger)
         {
@@ -109,6 +110,63 @@ namespace WebTruyenMVC.Models
                 Code = deleteResult.DeletedCount > 0 ? 200 : 404,
                 Message = deleteResult.DeletedCount > 0 ? "Deleted successfully" : "Not found"
             };
+        }
+
+        public async Task<MessagesResponse> GetTopRatedStoriesAsync()
+        {
+            var rateCollection = mongoContext.GetCollection<RateEntity>(MongoCollectionRate);
+            var storyCollection = mongoContext.GetCollection<StoryEntity>(MongoCollection);
+
+            // Aggregation để tính trung bình rating theo StoryID
+            var ratingAggregation = await rateCollection.Aggregate()
+                .Group(r => r.StoryID, g => new
+                {
+                    StoryID = g.Key,
+                    AverageRating = g.Average(r => r.Rating)
+                })
+                .SortByDescending(g => g.AverageRating)
+                .Limit(20)
+                .ToListAsync();
+
+            // Lấy danh sách StoryID của top 20 truyện
+            var topStoryIds = ratingAggregation.Select(r => r.StoryID).ToList();
+
+            // Lọc danh sách truyện có ID trong topStoryIds
+            var filter = Builders<StoryEntity>.Filter.In(s => s.Id, topStoryIds);
+            var topStories = await storyCollection.Find(filter).ToListAsync();
+
+            // Map kết quả trung bình Rating vào danh sách truyện
+            var storyList = topStories.Select(story =>
+            {
+                var ratingInfo = ratingAggregation.FirstOrDefault(r => r.StoryID == story.Id);
+                return new
+                {
+                    story.Id,
+                    story.Title,
+                    story.Description,
+                    story.CoverImage,
+                    story.Author,
+                    story.Categories,
+                    story.Status,
+                    story.Views,
+                    story.Created,
+                    AverageRating = ratingInfo?.AverageRating ?? 0 // Nếu không có rating thì mặc định 0
+                };
+            }).OrderByDescending(s => s.AverageRating).ToList();
+
+            // Trả về response
+            var response = new MessagesResponse
+            {
+                Code = 200,
+                Message = "Successful",
+                Data = new
+                {
+                    TotalItemCounts = storyList.Count,
+                    ListData = storyList
+                }
+            };
+
+            return response;
         }
 
     }

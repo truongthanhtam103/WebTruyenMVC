@@ -61,5 +61,13 @@ namespace WebTruyenMVC.Controllers
             var response = await csModel.DeleteChapterAsync(id);
             return Ok(response);
         }
+
+        [HttpPost("Read")]
+        public async Task<IActionResult> ReadChapter([FromBody] ReadChapterRequest request)
+        {
+            var csModel = new ChapterModel(mongoContext, logger);
+            await csModel.ReadChapter(request.UserId, request.StoryId, request.ChapterNumber);
+            return Ok(new { message = "Reading history updated successfully!" });
+        }
     }
 }

@@ -61,5 +61,15 @@ namespace WebTruyenMVC.Controllers
             var response = await csModel.DeleteStoryAsync(id);
             return Ok(response);
         }
+
+        [HttpPost("TopRated")] //Truyện TOP đề cử
+        public async Task<IActionResult> GetTopRatedStories()
+        {
+            var csModel = new StoryModel(mongoContext, logger);
+            var response = await csModel.GetTopRatedStoriesAsync();
+
+            return Ok(response);
+        }
+
     }
 }

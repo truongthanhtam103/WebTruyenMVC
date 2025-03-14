@@ -15,6 +15,8 @@ namespace WebTruyenMVC.Models
         private readonly MongoContext mongoContext;
         private readonly ILogger logger;
         private const string MongoCollection = "Chapters";
+        private const string MongoCollectionStory = "Stories";
+        private const string MongoCollectionReadingHistory = "ReadingHistory";
 
         public ChapterModel(MongoContext mongoContext, ILogger logger)
         {
@@ -111,5 +113,46 @@ namespace WebTruyenMVC.Models
             };
         }
 
+        public async Task<MessagesResponse> IncreaseStoryView(string storyId)
+        {
+            var collection = mongoContext.GetCollection<StoryEntity>(MongoCollectionStory);
+            var filter = Builders<StoryEntity>.Filter.Eq(s => s.Id, storyId);
+            var update = Builders<StoryEntity>.Update.Inc(s => s.Views, 1);
+            var updateResult = await collection.UpdateOneAsync(filter, update);
+
+            return new MessagesResponse
+            {
+                Code = updateResult.ModifiedCount > 0 ? 200 : 404,
+                Message = updateResult.ModifiedCount > 0 ? "View count updated successfully" : "Story not found"
+            };
+        }
+
+        public async Task<MessagesResponse> UpdateReadingHistory(string userId, string storyId, int chapterNumber)
+        {
+            var collection = mongoContext.GetCollection<ReadingHistoryEntity>(MongoCollectionReadingHistory);
+            var filter = Builders<ReadingHistoryEntity>.Filter.Where(h => h.UserID == userId && h.StoryID == storyId);
+            var update = Builders<ReadingHistoryEntity>.Update
+                .Set(h => h.LastReadChapter, chapterNumber)
+                .Set(h => h.LastReadAt, DateTime.UtcNow);
+
+            var options = new FindOneAndUpdateOptions<ReadingHistoryEntity>
+            {
+                IsUpsert = true // Nếu không tìm thấy sẽ tạo mới
+            };
+
+            var updateResult = await collection.FindOneAndUpdateAsync(filter, update, options);
+
+            return new MessagesResponse
+            {
+                Code = updateResult != null ? 200 : 500,
+                Message = updateResult != null ? "Reading history updated successfully" : "Failed to update reading history"
+            };
+        }
+
+        public async Task ReadChapter(string userId, string storyId, int chapterNumber)
+        {
+            await IncreaseStoryView(storyId);
+            await UpdateReadingHistory(userId, storyId, chapterNumber);
+        }
     }
 }

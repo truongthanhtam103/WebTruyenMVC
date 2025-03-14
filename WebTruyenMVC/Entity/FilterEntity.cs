@@ -20,4 +20,12 @@
         public string Email { get; set; }
         public string Password { get; set; }
     }
+
+    public class ReadChapterRequest
+    {
+        public string UserId { get; set; } = string.Empty;
+        public string StoryId { get; set; } = string.Empty;
+        public int ChapterNumber { get; set; }
+    }
+
 }
