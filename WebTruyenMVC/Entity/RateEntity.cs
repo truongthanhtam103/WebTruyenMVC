@@ -3,7 +3,7 @@ using MongoDB.Bson;
 
 namespace WebTruyenMVC.Entity
 {
-    public class RatingEntity
+    public class RateEntity
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]

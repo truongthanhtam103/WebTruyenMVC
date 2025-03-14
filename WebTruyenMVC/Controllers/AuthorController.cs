@@ -37,20 +37,20 @@ namespace WebTruyenMVC.Controllers
         }
 
         [HttpPost("Create")]
-        public async Task<IActionResult> Create([FromBody] AuthorEntity newStory)
+        public async Task<IActionResult> Create([FromBody] AuthorEntity newAuthor)
         {
             var csModel = new AuthorModel(mongoContext, logger);
-            var response = await csModel.CreateAuthorAsync(newStory);
+            var response = await csModel.CreateAuthorAsync(newAuthor);
             return Ok(response);
         }
 
 
         [HttpPut("Update/{id}")]
-        public async Task<IActionResult> Update(string id, [FromBody] AuthorEntity updateStory)
+        public async Task<IActionResult> Update(string id, [FromBody] AuthorEntity updateAuthor)
         {
-            updateStory.Id = id;
+            updateAuthor.Id = id;
             var csModel = new AuthorModel(mongoContext, logger);
-            var response = await csModel.UpdateAuthorAsync(updateStory);
+            var response = await csModel.UpdateAuthorAsync(updateAuthor);
             return Ok(response);
         }
 

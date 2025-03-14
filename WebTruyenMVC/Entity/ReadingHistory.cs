@@ -3,7 +3,7 @@ using MongoDB.Bson;
 
 namespace WebTruyenMVC.Entity
 {
-    public class Reading_History
+    public class ReadingHistoryEntity
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]

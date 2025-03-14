@@ -60,40 +60,40 @@ namespace WebTruyenMVC.Models
         {
             var collection = mongoContext.GetCollection<AuthorEntity>(MongoCollection);
             var filter = Builders<AuthorEntity>.Filter.Eq(s => s.Id, id);
-            var story = await collection.Find(filter).FirstOrDefaultAsync();
+            var author = await collection.Find(filter).FirstOrDefaultAsync();
 
             return new MessagesResponse
             {
-                Code = story != null ? 200 : 404,
-                Message = story != null ? "Record found" : "Not found",
-                Data = story
+                Code = author != null ? 200 : 404,
+                Message = author != null ? "Record found" : "Not found",
+                Data = author
             };
         }
 
-        public async Task<MessagesResponse> CreateAuthorAsync(AuthorEntity newStory)
+        public async Task<MessagesResponse> CreateAuthorAsync(AuthorEntity newAuthor)
         {
             var collection = mongoContext.GetCollection<AuthorEntity>(MongoCollection);
-            await collection.InsertOneAsync(newStory);
+            await collection.InsertOneAsync(newAuthor);
 
             return new MessagesResponse
             {
                 Code = 201,
                 Message = "Created successfully",
-                Data = newStory
+                Data = newAuthor
             };
         }
 
-        public async Task<MessagesResponse> UpdateAuthorAsync(AuthorEntity updateStory)
+        public async Task<MessagesResponse> UpdateAuthorAsync(AuthorEntity updateAuthor)
         {
             var collection = mongoContext.GetCollection<AuthorEntity>(MongoCollection);
-            var filter = Builders<AuthorEntity>.Filter.Eq(s => s.Id, updateStory.Id);
-            var updateResult = await collection.ReplaceOneAsync(filter, updateStory);
+            var filter = Builders<AuthorEntity>.Filter.Eq(s => s.Id, updateAuthor.Id);
+            var updateResult = await collection.ReplaceOneAsync(filter, updateAuthor);
 
             return new MessagesResponse
             {
                 Code = updateResult.ModifiedCount > 0 ? 200 : 404,
                 Message = updateResult.ModifiedCount > 0 ? "Updated successfully" : "Not found",
-                Data = updateStory
+                Data = updateAuthor
             };
         }
 

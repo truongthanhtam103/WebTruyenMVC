@@ -6,31 +6,32 @@ using WebTruyenMVC.Entity;
 using WebTruyenMVC.Service;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using System.Xml;
 
 namespace WebTruyenMVC.Models
 {
-    public class CategoryModel
+    public class ReadingHistoryModel
     {
         private readonly MongoContext mongoContext;
         private readonly ILogger logger;
-        private const string MongoCollection = "Categories";
+        private const string MongoCollection = "ReadingHistory";
 
-        public CategoryModel(MongoContext mongoContext, ILogger logger)
+        public ReadingHistoryModel(MongoContext mongoContext, ILogger logger)
         {
             this.mongoContext = mongoContext;
             this.logger = logger;
         }
 
-        public async Task<MessagesResponse> GetAllCategoryAsync(FilterEntity request)
+        public async Task<MessagesResponse> GetAllReadingHistoryAsync(FilterEntity request)
         {
-            var collection = mongoContext.GetCollection<CategoryEntity>(MongoCollection);
-            var filter = FilterService.BuildFilter<CategoryEntity>(request.q, request.filter);
+            var collection = mongoContext.GetCollection<ReadingHistoryEntity>(MongoCollection);
+            var filter = FilterService.BuildFilter<ReadingHistoryEntity>(request.q, request.filter);
 
             // Đếm tổng số bản ghi
             var totalRecords = await collection.CountDocumentsAsync(filter);
 
             // Áp dụng sắp xếp
-            var sortDefinition = SortService.SortBuilder.BuildSort<CategoryEntity>(request.OrderBy, request.OrderByDescending);
+            var sortDefinition = SortService.SortBuilder.BuildSort<ReadingHistoryEntity>(request.OrderBy, request.OrderByDescending);
 
             // Lấy dữ liệu phân trang
             var data = await collection.Find(filter)
@@ -56,51 +57,51 @@ namespace WebTruyenMVC.Models
             return response;
         }
 
-        public async Task<MessagesResponse> GetCategoryByIdAsync(string id)
+        public async Task<MessagesResponse> GetReadingHistoryByIdAsync(string id)
         {
-            var collection = mongoContext.GetCollection<CategoryEntity>(MongoCollection);
-            var filter = Builders<CategoryEntity>.Filter.Eq(s => s.Id, id);
-            var category = await collection.Find(filter).FirstOrDefaultAsync();
+            var collection = mongoContext.GetCollection<ReadingHistoryEntity>(MongoCollection);
+            var filter = Builders<ReadingHistoryEntity>.Filter.Eq(s => s.Id, id);
+            var readingHistory = await collection.Find(filter).FirstOrDefaultAsync();
 
             return new MessagesResponse
             {
-                Code = category != null ? 200 : 404,
-                Message = category != null ? "Record found" : "Not found",
-                Data = category
+                Code = readingHistory != null ? 200 : 404,
+                Message = readingHistory != null ? "Record found" : "Not found",
+                Data = readingHistory
             };
         }
 
-        public async Task<MessagesResponse> CreateCategoryAsync(CategoryEntity newCategory)
+        public async Task<MessagesResponse> CreateReadingHistoryAsync(ReadingHistoryEntity newReadingHistory)
         {
-            var collection = mongoContext.GetCollection<CategoryEntity>(MongoCollection);
-            await collection.InsertOneAsync(newCategory);
+            var collection = mongoContext.GetCollection<ReadingHistoryEntity>(MongoCollection);
+            await collection.InsertOneAsync(newReadingHistory);
 
             return new MessagesResponse
             {
                 Code = 201,
                 Message = "Created successfully",
-                Data = newCategory
+                Data = newReadingHistory
             };
         }
 
-        public async Task<MessagesResponse> UpdateCategoryAsync(CategoryEntity updateCategory)
+        public async Task<MessagesResponse> UpdateReadingHistoryAsync(ReadingHistoryEntity updateStory)
         {
-            var collection = mongoContext.GetCollection<CategoryEntity>(MongoCollection);
-            var filter = Builders<CategoryEntity>.Filter.Eq(s => s.Id, updateCategory.Id);
-            var updateResult = await collection.ReplaceOneAsync(filter, updateCategory);
+            var collection = mongoContext.GetCollection<ReadingHistoryEntity>(MongoCollection);
+            var filter = Builders<ReadingHistoryEntity>.Filter.Eq(s => s.Id, updateStory.Id);
+            var updateResult = await collection.ReplaceOneAsync(filter, updateStory);
 
             return new MessagesResponse
             {
                 Code = updateResult.ModifiedCount > 0 ? 200 : 404,
                 Message = updateResult.ModifiedCount > 0 ? "Updated successfully" : "Not found",
-                Data = updateCategory
+                Data = updateStory
             };
         }
 
-        public async Task<MessagesResponse> DeleteCategoryAsync(string id)
+        public async Task<MessagesResponse> DeleteReadingHistoryAsync(string id)
         {
-            var collection = mongoContext.GetCollection<CategoryEntity>(MongoCollection);
-            var filter = Builders<CategoryEntity>.Filter.Eq(s => s.Id, id);
+            var collection = mongoContext.GetCollection<ReadingHistoryEntity>(MongoCollection);
+            var filter = Builders<ReadingHistoryEntity>.Filter.Eq(s => s.Id, id);
             var deleteResult = await collection.DeleteOneAsync(filter);
 
             return new MessagesResponse

@@ -6,31 +6,32 @@ using WebTruyenMVC.Entity;
 using WebTruyenMVC.Service;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using System.Xml;
 
 namespace WebTruyenMVC.Models
 {
-    public class CategoryModel
+    public class ChapterModel
     {
         private readonly MongoContext mongoContext;
         private readonly ILogger logger;
-        private const string MongoCollection = "Categories";
+        private const string MongoCollection = "Chapters";
 
-        public CategoryModel(MongoContext mongoContext, ILogger logger)
+        public ChapterModel(MongoContext mongoContext, ILogger logger)
         {
             this.mongoContext = mongoContext;
             this.logger = logger;
         }
 
-        public async Task<MessagesResponse> GetAllCategoryAsync(FilterEntity request)
+        public async Task<MessagesResponse> GetAllChapterAsync(FilterEntity request)
         {
-            var collection = mongoContext.GetCollection<CategoryEntity>(MongoCollection);
-            var filter = FilterService.BuildFilter<CategoryEntity>(request.q, request.filter);
+            var collection = mongoContext.GetCollection<ChapterEntity>(MongoCollection);
+            var filter = FilterService.BuildFilter<ChapterEntity>(request.q, request.filter);
 
             // Đếm tổng số bản ghi
             var totalRecords = await collection.CountDocumentsAsync(filter);
 
             // Áp dụng sắp xếp
-            var sortDefinition = SortService.SortBuilder.BuildSort<CategoryEntity>(request.OrderBy, request.OrderByDescending);
+            var sortDefinition = SortService.SortBuilder.BuildSort<ChapterEntity>(request.OrderBy, request.OrderByDescending);
 
             // Lấy dữ liệu phân trang
             var data = await collection.Find(filter)
@@ -56,51 +57,51 @@ namespace WebTruyenMVC.Models
             return response;
         }
 
-        public async Task<MessagesResponse> GetCategoryByIdAsync(string id)
+        public async Task<MessagesResponse> GetChapterByIdAsync(string id)
         {
-            var collection = mongoContext.GetCollection<CategoryEntity>(MongoCollection);
-            var filter = Builders<CategoryEntity>.Filter.Eq(s => s.Id, id);
-            var category = await collection.Find(filter).FirstOrDefaultAsync();
+            var collection = mongoContext.GetCollection<ChapterEntity>(MongoCollection);
+            var filter = Builders<ChapterEntity>.Filter.Eq(s => s.Id, id);
+            var chapter = await collection.Find(filter).FirstOrDefaultAsync();
 
             return new MessagesResponse
             {
-                Code = category != null ? 200 : 404,
-                Message = category != null ? "Record found" : "Not found",
-                Data = category
+                Code = chapter != null ? 200 : 404,
+                Message = chapter != null ? "Record found" : "Not found",
+                Data = chapter
             };
         }
 
-        public async Task<MessagesResponse> CreateCategoryAsync(CategoryEntity newCategory)
+        public async Task<MessagesResponse> CreateChapterAsync(ChapterEntity newChapter)
         {
-            var collection = mongoContext.GetCollection<CategoryEntity>(MongoCollection);
-            await collection.InsertOneAsync(newCategory);
+            var collection = mongoContext.GetCollection<ChapterEntity>(MongoCollection);
+            await collection.InsertOneAsync(newChapter);
 
             return new MessagesResponse
             {
                 Code = 201,
                 Message = "Created successfully",
-                Data = newCategory
+                Data = newChapter
             };
         }
 
-        public async Task<MessagesResponse> UpdateCategoryAsync(CategoryEntity updateCategory)
+        public async Task<MessagesResponse> UpdateChapterAsync(ChapterEntity updateChapter)
         {
-            var collection = mongoContext.GetCollection<CategoryEntity>(MongoCollection);
-            var filter = Builders<CategoryEntity>.Filter.Eq(s => s.Id, updateCategory.Id);
-            var updateResult = await collection.ReplaceOneAsync(filter, updateCategory);
+            var collection = mongoContext.GetCollection<ChapterEntity>(MongoCollection);
+            var filter = Builders<ChapterEntity>.Filter.Eq(s => s.Id, updateChapter.Id);
+            var updateResult = await collection.ReplaceOneAsync(filter, updateChapter);
 
             return new MessagesResponse
             {
                 Code = updateResult.ModifiedCount > 0 ? 200 : 404,
                 Message = updateResult.ModifiedCount > 0 ? "Updated successfully" : "Not found",
-                Data = updateCategory
+                Data = updateChapter
             };
         }
 
-        public async Task<MessagesResponse> DeleteCategoryAsync(string id)
+        public async Task<MessagesResponse> DeleteChapterAsync(string id)
         {
-            var collection = mongoContext.GetCollection<CategoryEntity>(MongoCollection);
-            var filter = Builders<CategoryEntity>.Filter.Eq(s => s.Id, id);
+            var collection = mongoContext.GetCollection<ChapterEntity>(MongoCollection);
+            var filter = Builders<ChapterEntity>.Filter.Eq(s => s.Id, id);
             var deleteResult = await collection.DeleteOneAsync(filter);
 
             return new MessagesResponse

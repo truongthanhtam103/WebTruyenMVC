@@ -10,6 +10,6 @@ namespace WebTruyenMVC.Entity
         public string Id { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string Bio { get; set; } = string.Empty;
-        public List<string> Sotries { get; set; } = new List<string>();
+        public List<string> Stories { get; set; } = new List<string>();
     }
 }
