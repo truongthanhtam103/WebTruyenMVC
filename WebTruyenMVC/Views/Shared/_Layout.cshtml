@@ -1,0 +1,142 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Manga Reader</title>
+
+    <!-- css files -->
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.2/css/all.css">
+    <link rel="stylesheet" href="~/css/main.css">
+</head>
+
+<body>
+    <!-- start navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light shadow py-2 py-sm-0">
+        <a class="navbar-brand" href="#">
+            <h5>Admin</h5>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="container-fluid">
+                <div class="row py-3">
+                    <div class="col-lg-6 col-sm-12 mb-3 mb-sm-0">
+                        <ul class="navbar-nav mr-auto">
+                            <!-- always use single word for li -->
+                            <li class="nav-item active">
+                                <a class="nav-link" href="index.html">
+                                    Trang chủ<span class="sr-only">(current)</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="list.html">Mới nhất</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="list.html">Phổ biến</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Thể loại
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="list.html?genre=Hành động">Hành động</a>
+                                    <a class="dropdown-item" href="list.html?genre=Hài hước">Hài hước</a>
+                                    <a class="dropdown-item" href="list.html?genre=Kinh dị">Kinh dị</a>
+                                    <a class="dropdown-item" href="list.html?genre=Phiêu lưu">Phiêu lưu</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="list.html">Tất cả</a>
+                                </div>
+                            </li>
+                            <li class="nav-item"><a class="nav-link" href="contact.html">Liên hệ</a></li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <form class="form-inline search">
+                            <div class="input-group">
+                                <input type="text" class="form-control"
+                                       placeholder="Tìm kiếm theo tên, tác giả, thể loại"
+                                       aria-label="Tìm kiếm theo tên, tác giả, thể loại">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="profile float-right">
+            <div class="saved">
+                <button class="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                    <i class="fa fa-bookmark fa-2x"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">
+                        <div class="row">
+                            <div class="col"><img src="img/cover1.jpg" width="50"></div>
+                            <div class="col">
+                                <h5>One piece 1</h5>
+                                <small>Lastest <span>VOL. 11</span></small>
+                            </div>
+                        </div>
+                    </a>
+                    <a class="dropdown-item" href="#">
+                        <div class="row">
+                            <div class="col"><img src="img/cover1.jpg" width="50"></div>
+                            <div class="col">
+                                <h5>One piece 1</h5>
+                                <small>Lastest <span>VOL. 11</span></small>
+                            </div>
+                        </div>
+                    </a>
+                    <hr>
+                    <a class="dropdown-item" href="#">View all saved mangas (14)</a>
+                </div>
+            </div>
+            <div class="account">
+                <button class="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                    <i class="fa fa-user-circle fa-2x"></i><i class="fa fa-angle-down"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                    @if (string.IsNullOrEmpty(Context.Session.GetString("UserId")))
+                    {
+                        <a class="dropdown-item" href="/Auth/Login">Đăng nhập</a>
+                        <a class="dropdown-item" href="/Auth/Register">Đăng ký</a>
+                    }
+                    else
+                    {
+                        <a class="dropdown-item" href="/Home/History">Lịch sử</a>
+                        <a class="dropdown-item text-danger" href="/Auth/Logout">Đăng xuất</a>
+                    }
+                </div>
+            </div>
+        </div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </nav>
+    @RenderBody()
+    <footer>
+        <div class="container py-4">
+            <span class="copyright">&copy; 2025 Admin</span>
+            <span class="design float-right">Designed by Admin</span>
+        </div>
+    </footer>
+    <!-- end footer -->
+    <!-- js files -->
+    <script src="~/js/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/main.js"></script>
+</body>
+
+</html>

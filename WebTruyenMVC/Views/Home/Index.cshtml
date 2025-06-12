@@ -1,0 +1,113 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<!-- end navbar-->
+<!-- start slider -->
+<div id="mangaslider" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img class="d-block w-100" src="img/slider1.jpg" alt="First slide">
+        </div>
+        <div class="carousel-item">
+            <img class="d-block w-100" src="img/slider2.jpg" alt="Second slide">
+        </div>
+        <div class="carousel-item">
+            <img class="d-block w-100" src="img/slider3.jpg" alt="Third slide">
+        </div>
+    </div>
+    <a class="carousel-control-prev" href="#mangaslider" role="button" data-slide="prev">
+        <div><span class="carousel-control-prev-icon" aria-hidden="true"></span></div>
+        <span class="sr-only">Trước</span>
+    </a>
+    <a class="carousel-control-next" href="#mangaslider" role="button" data-slide="next">
+        <div><span class="carousel-control-next-icon" aria-hidden="true"></span></div>
+        <span class="sr-only">Sau</span>
+    </a>
+</div>
+
+<form asp-action="Index" method="get" class="mb-4">
+    <div class="input-group">
+        <input type="text" class="form-control" name="search" value="@ViewBag.SearchKeyword" placeholder="Tìm truyện...">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="submit">Tìm</button>
+        </div>
+    </div>
+</form>
+
+<!-- end slider -->
+<div class="lastest container mt-4 mt-sm-5">
+    <div class="row">
+        <div class="col-lg-6">
+            <h2 class="font-weight-bolder float-left">Các Truyện Mới Nhất</h2>
+        </div>
+    </div>
+
+    <div class="posts row">
+        @foreach (var story in Model)  
+        {
+            <div class="col-lg-2 col-md-3 col-sm-4">
+                <div class="card mb-3">
+                    <a href="details.html">
+                        <img src="@story.CoverImage" class="card-img-top" alt="@story.Title">
+                    </a>
+                    <div class="over text-center">
+                        <div class="head text-left">
+                            <h6>@story.Title</h6>
+                        </div>
+                        <div class="about-list">
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">Thể loại: </th>
+                                        <td>@string.Join(", ", story.Categories)</td> 
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Tác giả:</th>
+                                        <td>@story.Author</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Update:</th>
+                                        <td>@story.Status</td> 
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="about text-muted">Truyện tranh nổi bật</p>
+                        <a class="reading btn" href="details.html">Bắt đầu đọc</a>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="details.html">@story.Title</a></h5>
+                        <p class="card-text">Chương: @story.Status</p>
+                        <p class="card-text"><small class="text-muted">Cập nhật @story.Created.ToString("d")</small></p> 
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+</div>
+
+<div class="recommended container mt-5">
+    <div class="row">
+        <div class="col-lg-6">
+            <h2 class="font-weight-bolder">Truyện Đề Cử</h2>
+        </div>
+    </div>
+    <div class="posts row">
+        @foreach (var story in (List<WebTruyenMVC.Entity.StoryEntity>)ViewBag.Recommended)
+        {
+            <div class="col-lg-2 col-md-3 col-sm-4">
+                <div class="card mb-3">
+                    <a href="details.html">
+                        <img src="@story.CoverImage" class="card-img-top" alt="@story.Title">
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="details.html">@story.Title</a></h5>
+                        <p class="card-text text-muted">Lượt xem: @story.Views</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

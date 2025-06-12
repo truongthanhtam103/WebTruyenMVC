@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Đăng Nhập";
+}
+<h2>Đăng Nhập</h2>
+<form method="post">
+    <div class="form-group">
+        <label>Email</label>
+        <input name="email" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label>Mật khẩu</label>
+        <input type="password" name="password" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Đăng nhập</button>
+</form>
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="text-danger">Email hoặc mật khẩu không đúng.</div>
+}

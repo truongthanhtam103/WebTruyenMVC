@@ -1,0 +1,20 @@
+﻿@{
+    ViewData["Title"] = "Xác nhận Email";
+}
+<h2>Xác nhận Email</h2>
+<form method="post">
+    <div class="form-group">
+        <label>Nhập mã xác nhận đã gửi về email</label>
+        <input name="code" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Xác nhận</button>
+</form>
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="text-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <div>@error.ErrorMessage</div>
+        }
+    </div>
+}
