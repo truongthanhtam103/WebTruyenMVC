@@ -19,6 +19,9 @@ namespace WebTruyenMVC.Controllers
             this.logger = logger;
         }
 
+        /// <summary>
+        /// Lấy danh sách tất cả thể loại tryện
+        /// </summary>
         [HttpPost("ListAll")]
         public async Task<IActionResult> GetAll([FromBody] FilterEntity request)
         {
@@ -28,6 +31,9 @@ namespace WebTruyenMVC.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Lấy thể loại truyện theo id
+        /// </summary>
         [HttpGet("GetById/{id}")]
         public async Task<IActionResult> GetById(string id)
         {
@@ -36,6 +42,9 @@ namespace WebTruyenMVC.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Thêm mới thể loại
+        /// </summary>
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] CategoryEntity newCategory)
         {
@@ -44,7 +53,9 @@ namespace WebTruyenMVC.Controllers
             return Ok(response);
         }
 
-
+        /// <summary>
+        /// Cập nhật thể loại
+        /// </summary>
         [HttpPut("Update/{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] CategoryEntity updateCategory)
         {
@@ -54,6 +65,9 @@ namespace WebTruyenMVC.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Xóa thể loại
+        /// </summary>
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(string id)
         {

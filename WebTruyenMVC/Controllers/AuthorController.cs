@@ -19,6 +19,9 @@ namespace WebTruyenMVC.Controllers
             this.logger = logger;
         }
 
+        /// <summary>
+        /// Lấy danh sách tất cả tác giả
+        /// </summary>
         [HttpPost("ListAll")]
         public async Task<IActionResult> GetAll([FromBody] FilterEntity request)
         {
@@ -28,6 +31,9 @@ namespace WebTruyenMVC.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Lấy thông tin tác giả theo id
+        /// </summary>
         [HttpGet("GetById/{id}")]
         public async Task<IActionResult> GetById(string id)
         {
@@ -36,6 +42,9 @@ namespace WebTruyenMVC.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Thêm mới tác giả
+        /// </summary>
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] AuthorEntity newAuthor)
         {
@@ -44,7 +53,9 @@ namespace WebTruyenMVC.Controllers
             return Ok(response);
         }
 
-
+        /// <summary>
+        /// Cập nhật thông tin tác giả
+        /// </summary>
         [HttpPut("Update/{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] AuthorEntity updateAuthor)
         {
@@ -54,6 +65,9 @@ namespace WebTruyenMVC.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Xóa tác giả
+        /// </summary>
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(string id)
         {

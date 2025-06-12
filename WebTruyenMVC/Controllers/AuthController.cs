@@ -23,6 +23,9 @@ namespace WebTruyenMVC.Controllers
         public IActionResult Login() => View();
         public IActionResult Register() => View();
 
+        /// <summary>
+        /// Đăng ký tài khoản mới với xác thực email.
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Register(UserEntity model)
         {
@@ -54,6 +57,9 @@ namespace WebTruyenMVC.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Xác thực mã đăng ký tài khoản.
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> VerifyEmailRegister(string code)
         {
@@ -101,6 +107,9 @@ namespace WebTruyenMVC.Controllers
             return RedirectToAction("Login");
         }
 
+        /// <summary>
+        /// Đăng nhập tài khoản.
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Login(string email, string password)
         {
@@ -111,13 +120,6 @@ namespace WebTruyenMVC.Controllers
                 return View();
             }
 
-            //if (!user.IsVerified)
-            //{
-            //    ModelState.AddModelError("", "Tài khoản chưa được xác nhận email.");
-            //    ViewBag.Email = email;
-            //    return RedirectToAction("VerifyEmail", new { email });
-            //}
-
             HttpContext.Session.SetString("UserName", user.UserName);
             HttpContext.Session.SetString("UserId", user._id);
             HttpContext.Session.SetString("Role", user.Role);
@@ -125,6 +127,9 @@ namespace WebTruyenMVC.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        /// <summary>
+        /// Gửi email xác thực đăng ký tài khoản.
+        /// </summary>
         private void SendVerificationEmail(string toEmail, string code)
         {
             try
