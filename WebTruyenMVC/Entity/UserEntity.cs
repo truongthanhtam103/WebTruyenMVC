@@ -13,9 +13,8 @@ namespace WebTruyenMVC.Entity
         public string Password { get; set; } = string.Empty;
         public string Avatar { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
-        public List<string> Favorite_Stories { get; set; } = new List<string>();
-        public bool IsLocked { get; set; }
         public List<string> Shelf { get; set; } = new List<string>();
+        public bool IsLocked { get; set; }
 
     }
 
