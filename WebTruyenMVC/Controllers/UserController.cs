@@ -20,6 +20,15 @@ namespace WebTruyenMVC.Controllers
             this.configuration = configuration;
         }
 
+        [HttpPost("ListAll")]
+        public async Task<IActionResult> GetAll([FromBody] FilterEntity request)
+        {
+            var csModel = new UserModel(mongoContext, logger);
+            var response = await csModel.GetAllUserAsync(request);
+
+            return Ok(response);
+        }
+
         [HttpPut("Update")]
         public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequest request)
         {
@@ -29,18 +38,29 @@ namespace WebTruyenMVC.Controllers
         }
 
         [HttpPut("Lock/{id}")]
-        public async Task<IActionResult> LockUser(string id)
+        public async Task<IActionResult> Lock(string id)
         {
+            var currentUserRole = HttpContext.Session.GetString("Role");
             var userModel = new UserModel(mongoContext, logger);
-            var response = await userModel.LockUserAsync(id);
+            var response = await userModel.LockUserAsync(id, currentUserRole);
+            return Ok(response);
+        }
+
+        [HttpPut("Unlock/{id}")]
+        public async Task<IActionResult> Unlock(string id)
+        {
+            var currentUserRole = HttpContext.Session.GetString("Role");
+            var userModel = new UserModel(mongoContext, logger);
+            var response = await userModel.UnlockUserAsync(id, currentUserRole);
             return Ok(response);
         }
 
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
+            var currentUserRole = HttpContext.Session.GetString("Role");
             var userModel = new UserModel(mongoContext, logger);
-            var response = await userModel.DeleteUserAsync(id);
+            var response = await userModel.DeleteUserAsync(id, currentUserRole);
             return Ok(response);
         }
 

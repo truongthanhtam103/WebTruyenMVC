@@ -1,0 +1,74 @@
+﻿@{
+    ViewData["Title"] = "Quản lý tài khoản";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Quản lý tài khoản</h2>
+<table class="table table-bordered" id="userTable">
+    <thead>
+        <tr>
+            <th>Tên đăng nhập</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Dữ liệu sẽ được load bằng JS -->
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        function loadUsers() {
+            fetch('/api/User/ListAll', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ q: "", page: 1, pageSize: 100, orderBy: "", orderByDescending: true, filter: {} })
+            })
+            .then(res => res.json())
+            .then(res => {
+                let tbody = document.querySelector('#userTable tbody');
+                tbody.innerHTML = '';
+                (res.data && res.data.listData ? res.data.listData : []).forEach(user => {
+                    let tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${user.userName}</td>
+                        <td>${user.email}</td>
+                        <td>${user.role}</td>
+                        <td>${user.isLocked ? 'Đã khóa' : 'Hoạt động'}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning" onclick="toggleLockUser('${user._id}', ${user.isLocked})">
+                                ${user.isLocked ? 'Mở khóa' : 'Khóa'}
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteUser('${user._id}')">Xóa</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            });
+        }
+
+        function toggleLockUser(id, isLocked) {
+            let url = isLocked ? `/api/User/Unlock/${id}` : `/api/User/Lock/${id}`;
+            fetch(url, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({})
+            })
+            .then(res => res.json())
+            .then(() => loadUsers());
+        }
+
+        function deleteUser(id) {
+            if (confirm('Bạn có chắc muốn xóa tài khoản này?')) {
+                fetch(`/api/User/Delete/${id}`, { method: 'DELETE' })
+                .then(res => res.json())
+                .then(() => loadUsers());
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadUsers);
+    </script>
+}

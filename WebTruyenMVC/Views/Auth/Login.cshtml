@@ -15,5 +15,8 @@
 </form>
 @if (!ViewData.ModelState.IsValid)
 {
-    <div class="text-danger">Tên đăng nhập hoặc mật khẩu không đúng.</div>
+    foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+    {
+        <div class="text-danger">@modelError.ErrorMessage</div>
+    }
 }

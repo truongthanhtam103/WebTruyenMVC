@@ -128,6 +128,13 @@ namespace WebTruyenMVC.Controllers
                 return View();
             }
 
+            // Kiểm tra tài khoản bị khóa
+            if (user.IsLocked)
+            {
+                ModelState.AddModelError("", "Tài khoản đã bị khóa, vui lòng liên hệ quản trị viên để biết thêm chi tiết.");
+                return View();
+            }
+
             HttpContext.Session.SetString("UserName", user.UserName);
             HttpContext.Session.SetString("UserId", user._id);
             HttpContext.Session.SetString("Role", user.Role);

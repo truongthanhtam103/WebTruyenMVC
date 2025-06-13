@@ -1,6 +1,7 @@
-﻿using MongoDB.Driver;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
 using WebTruyenMVC.Entity;
+using WebTruyenMVC.Service;
 
 namespace WebTruyenMVC.Models
 {
@@ -15,6 +16,41 @@ namespace WebTruyenMVC.Models
         {
             this.mongoContext = mongoContext;
             this.logger = logger;
+        }
+
+        public async Task<MessagesResponse> GetAllUserAsync(FilterEntity request)
+        {
+            var collection = mongoContext.GetCollection<UserEntity>(MongoCollection);
+            var filter = FilterService.BuildFilter<UserEntity>(request.q, request.filter);
+
+            // Đếm tổng số bản ghi
+            var totalRecords = await collection.CountDocumentsAsync(filter);
+
+            // Áp dụng sắp xếp
+            var sortDefinition = SortService.SortBuilder.BuildSort<UserEntity>(request.OrderBy, request.OrderByDescending);
+
+            // Lấy dữ liệu phân trang
+            var data = await collection.Find(filter)
+                                        .Sort(sortDefinition)
+                                        .Skip((request.Page - 1) * request.PageSize)
+                                        .Limit(request.PageSize)
+                                        .ToListAsync();
+
+            // Tạo đối tượng MessagesResponse
+            var response = new MessagesResponse
+            {
+                Code = 200,
+                Message = "Successful",
+                Data = new
+                {
+                    TotalItemCounts = totalRecords,
+                    Page = request.Page,
+                    PageSize = request.PageSize,
+                    ListData = data
+                }
+            };
+
+            return response;
         }
 
         public async Task<MessagesResponse> UpdateUserAsync(UpdateUserRequest request)
@@ -52,7 +88,7 @@ namespace WebTruyenMVC.Models
             return new MessagesResponse { Code = 200, Message = "User updated successfully." };
         }
 
-        public async Task<MessagesResponse> LockUserAsync(string id)
+        public async Task<MessagesResponse> LockUserAsync(string id, string currentUserRole)
         {
             var users = mongoContext.GetCollection<UserEntity>(MongoCollection);
             var user = await users.Find(u => u._id == id).FirstOrDefaultAsync();
@@ -60,7 +96,8 @@ namespace WebTruyenMVC.Models
             if (user == null)
                 return new MessagesResponse { Code = 404, Message = "User not found." };
 
-            if (user.Role != "admin")
+            // Kiểm tra quyền của người thực hiện
+            if (currentUserRole != "admin")
                 return new MessagesResponse { Code = 403, Message = "Only admin can lock accounts." };
 
             var update = Builders<UserEntity>.Update.Set(u => u.IsLocked, true);
@@ -69,7 +106,7 @@ namespace WebTruyenMVC.Models
             return new MessagesResponse { Code = 200, Message = "User account locked successfully." };
         }
 
-        public async Task<MessagesResponse> DeleteUserAsync(string id)
+        public async Task<MessagesResponse> UnlockUserAsync(string id, string currentUserRole)
         {
             var users = mongoContext.GetCollection<UserEntity>(MongoCollection);
             var user = await users.Find(u => u._id == id).FirstOrDefaultAsync();
@@ -77,8 +114,27 @@ namespace WebTruyenMVC.Models
             if (user == null)
                 return new MessagesResponse { Code = 404, Message = "User not found." };
 
-            if (user.Role != "admin")
-                return new MessagesResponse { Code = 403, Message = "Only admin can delete accounts." };
+            // Kiểm tra quyền của người thực hiện
+            if (currentUserRole != "admin")
+                return new MessagesResponse { Code = 403, Message = "Only admin can unlock accounts." };
+
+            var update = Builders<UserEntity>.Update.Set(u => u.IsLocked, false);
+            await users.UpdateOneAsync(u => u._id == id, update);
+
+            return new MessagesResponse { Code = 200, Message = "User account unlocked successfully." };
+        }
+
+        public async Task<MessagesResponse> DeleteUserAsync(string id, string currentUserRole)
+        {
+            var users = mongoContext.GetCollection<UserEntity>(MongoCollection);
+            var user = await users.Find(u => u._id == id).FirstOrDefaultAsync();
+
+            if (user == null)
+                return new MessagesResponse { Code = 404, Message = "User not found." };
+
+            // Kiểm tra quyền của người thực hiện
+            if (currentUserRole != "admin")
+                return new MessagesResponse { Code = 403, Message = "Only admin can lock accounts." };
 
             await users.DeleteOneAsync(u => u._id == id);
 
