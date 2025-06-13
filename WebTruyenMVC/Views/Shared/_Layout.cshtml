@@ -120,13 +120,14 @@
                                 <a class="dropdown-item" href="/Chapter/Create">Thêm chương truyện</a>
                             </div>
                         </div>
+                        <a class="dropdown-item" href="/Account/Profile">Cập nhật thông tin tài khoản</a>
+
                         @if (Context.Session.GetString("Role") == "admin")
                         {
                             <a class="dropdown-item" href="/Admin/Account">Quản lý tài khoản</a>
                         }
                         else
                         {
-                            <a class="dropdown-item" href="/User/Profile">Cập nhật thông tin tài khoản</a>
                         }
                         <a class="dropdown-item text-danger" href="/Auth/Logout">Đăng xuất</a>
                     }

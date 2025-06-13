@@ -1,0 +1,29 @@
+﻿@model WebTruyenMVC.Entity.UserEntity
+
+@{
+    ViewData["Title"] = "Cập nhật thông tin tài khoản";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-info">@ViewBag.Message</div>
+}
+
+<form asp-action="Profile" method="post">
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        <label>Email</label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Avatar</label>
+        <input asp-for="Avatar" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Mật khẩu mới (bỏ qua nếu không đổi)</label>
+        <input asp-for="Password" class="form-control" type="password" />
+    </div>
+    <button type="submit" class="btn btn-primary">Cập nhật</button>
+</form>

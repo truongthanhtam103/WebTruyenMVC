@@ -53,6 +53,20 @@ namespace WebTruyenMVC.Models
             return response;
         }
 
+        public async Task<MessagesResponse> GetUserByIdAsync(string id)
+        {
+            var collection = mongoContext.GetCollection<UserEntity>(MongoCollection);
+            var filter = Builders<UserEntity>.Filter.Eq(s => s._id, id);
+            var user = await collection.Find(filter).FirstOrDefaultAsync();
+
+            return new MessagesResponse
+            {
+                Code = user != null ? 200 : 404,
+                Message = user != null ? "Record found" : "Not found",
+                Data = user
+            };
+        }
+
         public async Task<MessagesResponse> UpdateUserAsync(UpdateUserRequest request)
         {
             if (string.IsNullOrEmpty(request.UserId) || request.UserId.Length != 24)
