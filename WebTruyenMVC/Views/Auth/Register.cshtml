@@ -1,21 +1,35 @@
 ﻿@model WebTruyenMVC.Entity.UserEntity
+
+@{
+    ViewData["Title"] = "Đăng ký";
+}
+
+<h2>Đăng ký</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
 <form method="post">
     <div class="form-group">
-        <label>Tên người dùng</label>
+        <label for="UserName">Tên đăng nhập</label>
         <input asp-for="UserName" class="form-control" required />
+        <span asp-validation-for="UserName" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label>Email</label>
+        <label for="Email">Email</label>
         <input asp-for="Email" class="form-control" required />
         <span asp-validation-for="Email" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label>Mật khẩu</label>
+        <label for="Password">Mật khẩu</label>
         <input asp-for="Password" type="password" class="form-control" required />
+        <span asp-validation-for="Password" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-success">Đăng ký</button>
 </form>
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">@TempData["Success"]</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }

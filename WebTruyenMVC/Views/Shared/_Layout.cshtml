@@ -112,6 +112,22 @@
                     else
                     {
                         <a class="dropdown-item" href="/Home/History">Lịch sử</a>
+                        <div class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="#">Đăng truyện</a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="/Author/Create">Thêm mới tác giả</a>
+                                <a class="dropdown-item" href="/Story/Create">Thêm mới truyện</a>
+                                <a class="dropdown-item" href="/Chapter/Create">Thêm chương truyện</a>
+                            </div>
+                        </div>
+                        @if (Context.Session.GetString("Role") == "admin")
+                        {
+                            <a class="dropdown-item" href="/Admin/Account">Quản lý tài khoản</a>
+                        }
+                        else
+                        {
+                            <a class="dropdown-item" href="/User/Profile">Cập nhật thông tin tài khoản</a>
+                        }
                         <a class="dropdown-item text-danger" href="/Auth/Logout">Đăng xuất</a>
                     }
                 </div>
@@ -137,6 +153,21 @@
             crossorigin="anonymous"></script>
     <script src="~/js/bootstrap.min.js"></script>
     <script src="~/js/main.js"></script>
+
+    @RenderSection("Scripts", required: false)
+
+    <script>
+        document.querySelectorAll('.dropdown-submenu > a').forEach(function(element) {
+            element.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                let submenu = this.nextElementSibling;
+                if (submenu) {
+                    submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

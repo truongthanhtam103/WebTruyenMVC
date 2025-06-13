@@ -327,3 +327,20 @@ footer {
 }
 
 /* end footer */
+
+/* Dropdown submenu */
+.dropdown-submenu {
+    position: relative;
+}
+
+    .dropdown-submenu > .dropdown-menu {
+        top: 0;
+        left: 100%;
+        margin-top: -6px;
+        display: none;
+        position: absolute;
+    }
+
+    .dropdown-submenu:hover > .dropdown-menu {
+        display: block;
+    }

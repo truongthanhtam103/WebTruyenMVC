@@ -29,6 +29,14 @@ namespace WebTruyenMVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(UserEntity model)
         {
+            // Kiểm tra UserName đã tồn tại chưa
+            var userNameExists = await _users.Find(u => u.UserName == model.UserName).AnyAsync();
+            if (userNameExists)
+            {
+                ModelState.AddModelError("UserName", "Tên đăng nhập đã tồn tại. Vui lòng chọn tên khác.");
+                return View(model);
+            }
+
             // Đếm số tài khoản đã đăng ký với email này
             var emailCount = await _users.CountDocumentsAsync(u => u.Email == model.Email);
             if (emailCount >= 3)
@@ -111,12 +119,12 @@ namespace WebTruyenMVC.Controllers
         /// Đăng nhập tài khoản.
         /// </summary>
         [HttpPost]
-        public async Task<IActionResult> Login(string email, string password)
+        public async Task<IActionResult> Login(string userName, string password)
         {
-            var user = await _users.Find(u => u.Email == email).FirstOrDefaultAsync();
+            var user = await _users.Find(u => u.UserName == userName).FirstOrDefaultAsync();
             if (user == null || !password.Equals(user.Password))
             {
-                ModelState.AddModelError("", "Email hoặc mật khẩu không đúng.");
+                ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng.");
                 return View();
             }
 
